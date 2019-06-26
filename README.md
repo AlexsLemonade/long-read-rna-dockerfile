@@ -1,3 +1,5 @@
+### Long Read RNA Pipeline
+
 This project provides a Dockerfile capable of running https://github.com/ENCODE-DCC/long-read-rna-pipeline.
 
 This Dockerfile has been run to create an image called `ccdl/long_read_rnaseq`.
@@ -6,6 +8,25 @@ You can retrieve this image with:
 ```
 docker pull ccdl/long_read_rnaseq
 ```
+
+
+### What this Docker image contains
+
+This Docker image is based on the ubuntu:16.04 Docker image, so it contains a slim version of Ubuntu version 16.04.
+
+All of the software listed [here](https://github.com/ENCODE-DCC/long-read-rna-pipeline/blob/master/docs/reference.md#software) has been installed on the Docker image including:
+    * Python versions 2.7 and 3.7
+    * Minimap2 2.17
+    * Transcriptclean
+    * TALON
+
+In addition softare which those tools are dependent on has also been installed:
+    * Bedtools v2.28.0
+    * pybedtools
+    * pyfasta
+    * R version 3.4.2
+
+### How to use this Docker image
 
 Because of the way Docker works, you will need to mount a volume onto your Docker container in order to be able to pass it data.
 Therefore it is recommended that you create a `data` directory somewhere on your host machine and mount it onto your docker container.
@@ -39,3 +60,26 @@ Correspondingly, any data you produce within your Docker container that you want
 
 WARNING: when a Docker container exits all data that was within it is lost forever!!!
 (With the exception of data that resides within a mounted volume.)
+
+Note that this data directory can be located anywhere on your system as long as you supply the full path to it when running the Docker container.
+
+### How to update this Docker image
+
+Note that packages you install or changes you make to your environment while running the Docker container will not persist across runs.
+If you would like to make changes of this nature you should instead modify the Dockerfile and rebuild the image.
+
+The Dockerfile is simply called `Dockerfile`.
+If you open that file you will a number of commands.
+Depending on what kind of change you'd like to make you'll need to add new commands or modify existing ones.
+
+The [Dockerfile reference](https://docs.docker.com/engine/reference/builder/) is fairly comprehensive.
+
+Once you've modified the Dockerfile you can rebuild the image with:
+
+```
+docker build -t ccdl/long_read_rnaseq .
+```
+
+You will not be able to push this to Dockerhub, however you can use your new image locally.
+If your changes seem like they would be generally helpful please open a Pull Request against this repository.
+Once your Pull Request has been accepted we will rebuild and push the new image.

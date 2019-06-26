@@ -60,7 +60,7 @@ RUN python2 -m pip install --upgrade pip
 
 RUN python2 -m pip install pybedtools numpy pyfasta
 
-RUN python2 -m pip install pathlib
+RUN python2 -m pip install pathlib pytest
 
 RUN wget -q https://github.com/dewyman/TranscriptClean/archive/master.zip
 
