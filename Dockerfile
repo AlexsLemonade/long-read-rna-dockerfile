@@ -56,6 +56,20 @@ RUN tar -jxvf minimap2-2.17_x64-linux.tar.bz2
 
 RUN mv ./minimap2-2.17_x64-linux/minimap2 /usr/local/bin
 
+# RUN wget -q https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools
 
+RUN wget -q https://github.com/arq5x/bedtools2/releases/download/v2.28.0/bedtools-2.28.0.tar.gz
 
-ENTRYPOINT minimap2 --version
+RUN tar -xzf bedtools-2.28.0.tar.gz
+
+RUN cd bedtools2 && make
+
+RUN mv bedtools2/bin/bedtools /usr/local/bin
+
+RUN python3.7 -m pip install --upgrade pip
+
+RUN apt-get install -y python3.7-dev
+
+RUN python3.7 -m pip install pybedtools
+
+ENTRYPOINT sleep 100
