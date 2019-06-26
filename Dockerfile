@@ -1,13 +1,19 @@
 FROM ubuntu:16.04
 
-RUN apt-get update -qq && \
+COPY CRAN.gpg .
+
+RUN apt-key add CRAN.gpg
+
+RUN apt-get update && \
     apt-get install -y \
+    apt-transport-https \
+    lsb-release \
     software-properties-common
 
-RUN add-apt-repository ppa:deadsnakes/ppa
+RUN echo "deb https://cran.revolutionanalytics.com/bin/linux/ubuntu $(lsb_release -sc)/" \
+    >> /etc/apt/sources.list.d/added_repos.list
 
-RUN apt update && \
-    apt install -y python3.7
+RUN add-apt-repository ppa:deadsnakes/ppa
 
 RUN apt-get update -qq && \
     apt-get install -y \
@@ -17,36 +23,21 @@ RUN apt-get update -qq && \
     libcurl4-openssl-dev \
     curl \
     unzip \
-    wget && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y bzip2
-
-COPY CRAN.gpg .
-
-RUN apt-get update && \
-    apt-get install -y apt-transport-https && \
-    apt-get install -y lsb-release && \
-    echo "deb https://cran.revolutionanalytics.com/bin/linux/ubuntu $(lsb_release -sc)/" \
-    >> /etc/apt/sources.list.d/added_repos.list
-
-RUN apt-key add CRAN.gpg
-
-RUN apt-get update -qq
-
-RUN apt-get install -y \
     mercurial \
     libcairo-dev \
     libedit-dev \
     lsb-release \
-    python3 \
+    python3.7 \
     python3-pip \
     python-pip \
     r-base-core=3.4.2-1xenial1 \
     r-base-dev=3.4.2-1xenial1 \
     libpq-dev \
-    libxml2-dev
+    libxml2-dev \
+    python-dev \
+    bzip2 \
+    wget && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
 WORKDIR /home/user
@@ -67,11 +58,9 @@ RUN mv bedtools2/bin/bedtools /usr/local/bin
 
 RUN python2 -m pip install --upgrade pip
 
-RUN apt-get install -y python-dev
+RUN python2 -m pip install pybedtools numpy pyfasta
 
-RUN python2 -m pip install pybedtools
-
-RUN python2 -m pip install numpy pyfasta
+RUN python2 -m pip install pathlib
 
 RUN wget -q https://github.com/dewyman/TranscriptClean/archive/master.zip
 
@@ -80,5 +69,11 @@ RUN unzip master.zip && rm master.zip
 RUN wget -q https://github.com/dewyman/TALON/archive/master.zip
 
 RUN unzip master.zip && rm master.zip
+
+# Cleanup
+RUN rm bedtools-2.28.0.tar.gz && \
+    rm minimap2-2.17_x64-linux.tar.bz2 && \
+    rm -r bedtools2 && \
+    rm -r minimap2-2.17_x64-linux
 
 ENTRYPOINT []
