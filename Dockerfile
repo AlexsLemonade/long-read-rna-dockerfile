@@ -81,4 +81,4 @@ RUN wget -q https://github.com/dewyman/TALON/archive/master.zip
 
 RUN unzip master.zip && rm master.zip
 
-ENTRYPOINT sleep 100
+ENTRYPOINT []
