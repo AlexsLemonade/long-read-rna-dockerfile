@@ -72,4 +72,6 @@ RUN apt-get install -y python3.7-dev
 
 RUN python3.7 -m pip install pybedtools
 
+RUN python3.7 -m pip install numpy pyfasta
+
 ENTRYPOINT sleep 100
